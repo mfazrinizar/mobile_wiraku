@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:wisataku/const/wira_data.dart';
+import 'package:wiraku/const/wira_data.dart';
 
-import '../components/info_wisata.dart';
-import '../components/item_wisata.dart';
+import '../components/info_wira.dart';
+import '../components/item_wira.dart';
 // import '../wisataku.dart';
 
 class WiraView extends StatefulWidget {
@@ -14,14 +14,16 @@ class WiraView extends StatefulWidget {
 
 class _WiraViewState extends State<WiraView> {
   int _terpilih = 0;
+  int _sebelumnya = 0;
 
   final DraggableScrollableController _sheetController =
       DraggableScrollableController();
 
   final Map<int, List<Map<String, String>>> commentsByHero = {};
 
-  void _ubahWisata(int id) {
+  void _ubahWira(int id) {
     setState(() {
+      _sebelumnya = _terpilih;
       _terpilih = id;
     });
   }
@@ -56,8 +58,9 @@ class _WiraViewState extends State<WiraView> {
       body: Stack(
         children: [
           Positioned.fill(
-            child: InfoWisata(
+            child: InfoWira(
               data: wiraData[_terpilih],
+              previousIndex: _sebelumnya,
               comments: commentsByHero[_terpilih] ?? [],
               onSaveComments: (updated) {
                 setState(() {
@@ -134,14 +137,17 @@ class _WiraViewState extends State<WiraView> {
                             itemCount: daftarLain.length,
                             itemBuilder: (context, index) {
                               final wis = daftarLain[index];
-                              return ItemWisata(
+                              return ItemWira(
                                 teks: wis['name'],
                                 gambar: wis['imagePath'],
                                 rating: wis['rating'],
-                                onTap: () {
-                                  _ubahWisata(wis['id']);
-
-                                  DraggableScrollableActuator.reset(context);
+                                onTap: () async {
+                                  await _sheetController.animateTo(
+                                    minChildSize,
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeOut,
+                                  );
+                                  _ubahWira(wis['id']);
                                 },
                               );
                             },

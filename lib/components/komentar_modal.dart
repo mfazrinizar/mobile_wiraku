@@ -36,7 +36,7 @@ class _KomentarModalState extends State<KomentarModal> {
     setState(() {
       _dataKomentar.add({
         'id': DateTime.now().millisecondsSinceEpoch.toString(),
-        'from': 'user',
+        'from': 'Atmin',
         'teks': text,
       });
       _teksInputController.clear();

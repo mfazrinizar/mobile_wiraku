@@ -5,23 +5,25 @@ import 'header.dart';
 import 'rating.dart';
 import 'komentar_modal.dart';
 
-class InfoWisata extends StatefulWidget {
+class InfoWira extends StatefulWidget {
   final Map<String, dynamic> data;
+  final int previousIndex;
   final List<Map<String, String>> comments;
   final ValueChanged<List<Map<String, String>>> onSaveComments;
 
-  const InfoWisata({
+  const InfoWira({
     super.key,
     required this.data,
+    required this.previousIndex,
     required this.comments,
     required this.onSaveComments,
   });
 
   @override
-  State<InfoWisata> createState() => _InfoWisataState();
+  State<InfoWira> createState() => _InfoWiraState();
 }
 
-class _InfoWisataState extends State<InfoWisata> {
+class _InfoWiraState extends State<InfoWira> {
   bool _detil = false;
 
   Future<void> _launchURL(String url) async {
@@ -67,11 +69,62 @@ class _InfoWisataState extends State<InfoWisata> {
             children: [
               Stack(
                 children: [
-                  Image.asset(
-                    widget.data['imagePath'],
-                    height: screenHeight * 0.65,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
+                  // BACKGROUND IMAGE WHEN THEME IS ORANGE (animated)
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 0),
+                    switchInCurve: Curves.easeOut,
+                    switchOutCurve: Curves.easeIn,
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        opacity: animation,
+                        child: SlideTransition(
+                          position: animation.drive(Tween<Offset>(
+                            begin: const Offset(0, 0.03),
+                            end: Offset.zero,
+                          ).chain(CurveTween(curve: Curves.easeOut))),
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: Container(
+                      height: screenHeight * 0.65,
+                      width: double.infinity,
+                      color: (widget.data['themeColor'] ?? Colors.orange)
+                          .withValues(alpha: 0.25),
+                    ),
+                  ),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 1000),
+                    switchInCurve: Curves.easeOut,
+                    switchOutCurve: Curves.easeIn,
+                    transitionBuilder: (child, animation) {
+                      final int currentId = widget.data['id'] ?? 0;
+                      final bool forward = currentId >= widget.previousIndex;
+
+                      final bool isIncoming =
+                          (child.key == ValueKey(currentId));
+
+                      final Offset beginOffset = isIncoming
+                          ? Offset(forward ? 1.0 : -1.0, 0)
+                          : Offset(forward ? -1.0 : 1.0, 0);
+
+                      final Tween<Offset> offsetTween =
+                          Tween(begin: beginOffset, end: Offset.zero);
+
+                      return SlideTransition(
+                        position: animation.drive(
+                          offsetTween.chain(CurveTween(curve: Curves.easeOut)),
+                        ),
+                        child: FadeTransition(opacity: animation, child: child),
+                      );
+                    },
+                    child: Image.asset(
+                      widget.data['imagePath'],
+                      key: ValueKey(widget.data['id']),
+                      height: screenHeight * 0.65,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   Container(
                     height: screenHeight * 0.65,

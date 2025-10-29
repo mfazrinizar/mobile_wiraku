@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:icons_plus/icons_plus.dart';
 
-class ItemWisata extends StatelessWidget {
+class ItemWira extends StatelessWidget {
   final String teks;
   final String gambar;
   final int rating;
   final VoidCallback onTap;
 
-  const ItemWisata({
+  const ItemWira({
     super.key,
     required this.teks,
     required this.gambar,

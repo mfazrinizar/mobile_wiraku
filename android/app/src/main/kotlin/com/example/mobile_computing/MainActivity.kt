@@ -1,4 +1,4 @@
-package com.mobile.wisataku
+package com.mobile.wiraku
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wisataku/view/wira_view.dart';
+import 'package:wiraku/view/wira_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
